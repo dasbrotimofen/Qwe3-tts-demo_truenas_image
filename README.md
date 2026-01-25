@@ -16,3 +16,7 @@ Base qwen3-tts is working. 3 Tabs, like the demo.
 
 ## not working
 With flash-attn, I am still trying to get it working, idk if ever.
+
+
+# How
+Just built a custom app with those yaml instruction and put the app.py into the main directory so the yaml can load it
