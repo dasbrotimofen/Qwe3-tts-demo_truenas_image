@@ -33,12 +33,17 @@ RUN /opt/venv/bin/python -m pip install -U pip setuptools wheel packaging
 # Install qwen-tts and gradio
 RUN /opt/venv/bin/python -m pip install -U qwen-tts gradio
 
-# Install flash-attention specifically for RTX 3090 (compute capability 8.6)
+# Install flash-attention - FASTER BUILD (uses more CPU cores)
+# Adjust MAX_JOBS based on your system:
+# - 2-4 cores: MAX_JOBS=2
+# - 4-8 cores: MAX_JOBS=4
+# - 8+ cores: MAX_JOBS=8
+# WARNING: Higher MAX_JOBS uses more RAM (need ~4GB per job)
 RUN FLASH_ATTENTION_FORCE_ARCH=1 \
     FLASH_ATTENTION_CUDA_ARCHS=86 \
     TORCH_CUDA_ARCH_LIST=8.6 \
-    NVCC_THREADS=2 \
     MAX_JOBS=8 \
+    NVCC_THREADS=2 \
     CUDA_HOME=/usr/local/cuda \
     /opt/venv/bin/python -m pip install -U flash-attn --no-build-isolation -v
 
@@ -52,7 +57,7 @@ RUN mkdir -p /data
 WORKDIR /data
 
 # Expose port
-EXPOSE 8000
+EXPOSE 8001
 
 # Set entrypoint to use virtual environment
 ENTRYPOINT ["/opt/venv/bin/python"]

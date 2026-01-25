@@ -12,7 +12,7 @@ services:
               count: all
               driver: nvidia
 
-    image: pytorch/pytorch:2.10.0-cuda12.8-cudnn9-devel
+    image: javirub/flashattention-pytorch
 
     ports:
       - "8000:8000"

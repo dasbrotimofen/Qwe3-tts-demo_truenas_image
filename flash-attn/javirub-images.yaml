@@ -1,0 +1,48 @@
+name: qwen3-tts
+services:
+  qwen3-tts:
+    container_name: qwen3-tts-truenas
+
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities:
+                - gpu
+              count: all
+              driver: nvidia
+
+    image: javirub/flashattention-pytorch:flashattn2.7.4-pytorch2.7.0-cuda12.8-cudnn9-runtime
+
+    ports:
+      - "8000:8000"
+
+    volumes:
+      - "/mnt/MEGA-Storage/Docker-tests/qwen3-tts/data:/data"
+
+    environment:
+      - DEBIAN_FRONTEND=noninteractive
+      - TZ=Etc/UTC
+      - HF_HOME=/data/hf
+      - HF_HUB_CACHE=/data/hf
+      - ATTENTION_IMPL=flash_attention_2
+      - TORCH_CUDA_ARCH_LIST=8.6
+
+    entrypoint: ["/bin/bash", "-lc"]
+
+    command:
+      - "set -euo pipefail;
+
+        apt-get update;
+        apt-get install -y --no-install-recommends ffmpeg libsndfile1 sox git;
+        rm -rf /var/lib/apt/lists/*;
+
+        python3 -m pip install -U pip setuptools wheel packaging qwen-tts gradio;
+
+        # Verify base image has flash-attn + CUDA torch
+        python3 -c \"import torch; print('torch:', torch.__version__); print('cuda:', torch.cuda.is_available()); print('torch cuda:', torch.version.cuda); import flash_attn; print('flash_attn: import ok')\";
+
+        # Install app deps (do NOT install torch)
+        python3 -m pip install -U qwen-tts gradio;
+
+        python3 /data/app.py"

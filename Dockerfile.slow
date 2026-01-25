@@ -37,8 +37,8 @@ RUN /opt/venv/bin/python -m pip install -U qwen-tts gradio
 RUN FLASH_ATTENTION_FORCE_ARCH=1 \
     FLASH_ATTENTION_CUDA_ARCHS=86 \
     TORCH_CUDA_ARCH_LIST=8.6 \
-    NVCC_THREADS=2 \
-    MAX_JOBS=8 \
+    NVCC_THREADS=1 \
+    MAX_JOBS=1 \
     CUDA_HOME=/usr/local/cuda \
     /opt/venv/bin/python -m pip install -U flash-attn --no-build-isolation -v
 
