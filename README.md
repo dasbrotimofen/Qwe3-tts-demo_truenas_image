@@ -24,7 +24,10 @@ Base qwen3-tts is working. 3 Tabs, like the demo.
 Just built a custom app with those yaml instruction and put the app.py into the main directory so the yaml can load it
 
 
-## wtih flash-attn
+## with flash-attn
 Flash-attn with container from https://hub.docker.com/r/javirub/flashattention-pytorch
 
 javirub/flashattention-pytorch:flashattn2.7.4-pytorch2.7.0-cuda12.8-cudnn9-runtime
+
+
+# Thank you so much for this working images javirub
