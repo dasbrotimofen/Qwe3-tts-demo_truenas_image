@@ -1,0 +1,36 @@
+name: qwen3-tts
+services:
+  qwen3-tts:
+    container_name: qwen3-tts-truenas
+
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities:
+                - gpu
+              count: all
+              driver: nvidia
+
+    image: python:3.12-slim
+    ports:
+      - "8000:8000"
+
+    volumes:
+      - "/mnt/MEGA-Storage/Docker-tests/qwen3-tts/data:/data"
+
+    environment:
+      - MODEL_ID=Qwen/Qwen3-TTS-12Hz-1.7B-Base
+      - HF_HOME=/data/hf
+      - HF_HUB_CACHE=/data/hf
+
+    entrypoint: ["/bin/bash", "-lc"]
+
+    command:
+      - "set -e;
+         apt-get update;
+         apt-get install -y --no-install-recommends ffmpeg libsndfile1 sox git;
+         rm -rf /var/lib/apt/lists/*;
+         python -m pip install -U pip;
+         pip install -U qwen-tts;
+         python /data/app.py"

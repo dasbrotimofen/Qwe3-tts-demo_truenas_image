@@ -1,0 +1,57 @@
+name: qwen3-tts
+services:
+  qwen3-tts:
+    container_name: qwen3-tts-truenas
+    image: nvidia/cuda:12.8.0-devel-ubuntu22.04
+
+    ports:
+      - "8000:8000"
+
+    volumes:
+      - "/mnt/MEGA-Storage/Docker-tests/qwen3-tts/data:/data"
+
+    environment:
+      HF_HOME: /data/hf
+      HF_HUB_CACHE: /data/hf
+      ATTENTION_IMPL: flash_attention_2
+
+    entrypoint: ["/bin/bash", "-lc"]
+    command: |
+      set -euo pipefail
+
+      apt-get update
+      apt-get install -y --no-install-recommends \
+        python3 python3-venv python3-pip \
+        git ffmpeg libsndfile1 \
+        build-essential ninja-build \
+        python3-dev \
+        ca-certificates
+      rm -rf /var/lib/apt/lists/*
+
+      # verify nvcc exists now
+      nvcc --version
+      echo "CUDA_HOME=${CUDA_HOME:-/usr/local/cuda}"
+
+      python3 -m pip install -U pip setuptools wheel packaging
+
+      # Ensure CUDA torch is installed (you already had cu128; here we just make sure torch exists)
+      # If you want to pin to your known-good torch build, do it explicitly later.
+      python3 -m pip install -U torch
+
+      # Install FlashAttention2 (recommended by Qwen README)
+      MAX_JOBS=4 CUDA_HOME=/usr/local/cuda python3 -m pip install -U flash-attn --no-build-isolation
+
+      # Your app deps
+      python3 -m pip install -U qwen-tts gradio
+
+      # sanity checks
+      python3 - <<'PY'
+      import torch
+      print("torch:", torch.__version__)
+      print("cuda available:", torch.cuda.is_available())
+      print("torch cuda:", torch.version.cuda)
+      import flash_attn
+      print("flash_attn:", getattr(flash_attn, "__version__", "unknown"))
+      PY
+
+      python3 /data/app.py
