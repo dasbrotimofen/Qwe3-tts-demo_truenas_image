@@ -26,7 +26,6 @@ services:
       - HF_HOME=/data/hf
       - HF_HUB_CACHE=/data/hf
       - ATTENTION_IMPL=flash_attention_2
-      - TORCH_CUDA_ARCH_LIST=8.6
       - CUDA_HOME=/usr/local/cuda
 
     entrypoint: ["/bin/bash", "-lc"]
@@ -35,7 +34,7 @@ services:
       - "set -euo pipefail;
 
         apt-get update;
-        apt-get install -y --no-install-recommends ffmpeg libsndfile1 sox git python3-venv ninja-build;
+        # apt-get install -y --no-install-recommends ffmpeg libsndfile1 sox git python3-venv;
         rm -rf /var/lib/apt/lists/*;
 
         export CUDA_HOME=/usr/local/cuda;
@@ -47,7 +46,7 @@ services:
         /opt/venv/bin/python -m pip install -U pip setuptools wheel packaging;
         /opt/venv/bin/python -m pip install -U qwen-tts gradio;
 
-        FLASH_ATTENTION_FORCE_ARCH=1 FLASH_ATTENTION_CUDA_ARCHS=86 TORCH_CUDA_ARCH_LIST=8.6 NVCC_THREADS=1 MAX_JOBS=1 CUDA_HOME=/usr/local/cuda /opt/venv/bin/python -m pip install -U flash-attn --no-build-isolation -v;
+        TORCH_CUDA_ARCH_LIST=8.6 MAX_JOBS=1 CUDA_HOME=/usr/local/cuda /opt/venv/bin/python -m pip install -U flash-attn --no-build-isolation -v;
 
         /opt/venv/bin/python -c \"import torch; print('torch:', torch.__version__); print('cuda:', torch.cuda.is_available()); print('torch cuda:', torch.version.cuda); import flash_attn; print('flash_attn: import ok')\";
 

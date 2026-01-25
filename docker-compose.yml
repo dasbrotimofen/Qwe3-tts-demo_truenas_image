@@ -1,0 +1,27 @@
+name: qwen3-tts
+services:
+  qwen3-tts:
+    container_name: qwen3-tts-truenas
+    # Use the custom built image instead of pytorch base
+    image: qwen3-tts-rtx3090:latest
+    # Alternatively, build from Dockerfile in current directory:
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities:
+                - gpu
+              count: all
+              driver: nvidia
+    ports:
+      - "8000:8000"
+    volumes:
+      - "/mnt/MEGA-Storage/Docker-tests/qwen3-tts/data:/data"
+    environment:
+      - TZ=Etc/UTC
+      - HF_HOME=/data/hf
+      - HF_HUB_CACHE=/data/hf
+    restart: unless-stopped
