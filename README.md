@@ -12,7 +12,7 @@ I am at 25.04 Fangtooth
 ## working
 Base qwen3-tts is working. 3 Tabs, like the demo.
 
-
+![](base_UI_working.png)
 
 ## not working
 With flash-attn, I am still trying to get it working, idk if ever.
