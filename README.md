@@ -14,9 +14,17 @@ Base qwen3-tts is working. 3 Tabs, like the demo.
 
 ![](base_UI_working.png)
 
+
 ## not working
-With flash-attn, I am still trying to get it working, idk if ever.
+
 
 
 # How
+## without flash-attn
 Just built a custom app with those yaml instruction and put the app.py into the main directory so the yaml can load it
+
+
+## wtih flash-attn
+Flash-attn with container from https://hub.docker.com/r/javirub/flashattention-pytorch
+
+javirub/flashattention-pytorch:flashattn2.7.4-pytorch2.7.0-cuda12.8-cudnn9-runtime
